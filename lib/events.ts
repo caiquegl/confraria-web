@@ -26,6 +26,8 @@ export async function fetchEventShareDetail(eventId: string) {
   return (await response.json()) as EventShareDetail;
 }
 
+const ANDROID_PACKAGE = "com.caiquegl22.appconfraria";
+
 export function getAppEventUrl(eventId: string) {
   return `appconfraria://event/${eventId}`;
 }
@@ -33,4 +35,21 @@ export function getAppEventUrl(eventId: string) {
 export function getPublicEventUrl(eventId: string) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://confraria-web.vercel.app";
   return `${siteUrl.replace(/\/$/, "")}/events/${eventId}`;
+}
+
+export function getSharePreviewUrl(eventId: string) {
+  return `${getPublicEventUrl(eventId)}/preview.jpg`;
+}
+
+/** Abre o app pelo pacote, mesmo sem o domínio verificado no Android. */
+export function getAndroidIntentUrl(eventId: string) {
+  const fallback = `${getPublicEventUrl(eventId)}?web=1`;
+  return `intent://event/${eventId}#Intent;scheme=appconfraria;package=${ANDROID_PACKAGE};S.browser_fallback_url=${encodeURIComponent(fallback)};end`;
+}
+
+export function getOpenInAppUrl(eventId: string, userAgent: string) {
+  if (/Android/i.test(userAgent)) {
+    return getAndroidIntentUrl(eventId);
+  }
+  return getAppEventUrl(eventId);
 }

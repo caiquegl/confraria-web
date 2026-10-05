@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import {
   fetchEventShareDetail,
-  getAppEventUrl,
+  getOpenInAppUrl,
   getPublicEventUrl,
+  getSharePreviewUrl,
 } from "@/lib/events";
 
 type EventPageProps = {
@@ -12,9 +14,6 @@ type EventPageProps = {
     eventId: string;
   }>;
 };
-
-const fallbackImage =
-  "https://images.unsplash.com/photo-1558981806-ec527fa84c3d?q=80&w=1200&auto=format&fit=crop";
 
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const { eventId } = await params;
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     [event.category, event.location].filter(Boolean).join(" · ") ||
     "Veja este evento no Confraria.";
   const publicUrl = getPublicEventUrl(event.id);
-  const imageUrl = event.coverImageUrl || fallbackImage;
+  const imageUrl = getSharePreviewUrl(event.id);
 
   return {
     alternates: {
@@ -44,6 +43,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
         {
           alt: event.title,
           height: 630,
+          type: "image/jpeg",
           url: imageUrl,
           width: 1200,
         },
@@ -69,8 +69,9 @@ export default async function EventPage({ params }: EventPageProps) {
 
   if (!event) notFound();
 
-  const appUrl = getAppEventUrl(event.id);
-  const imageUrl = event.coverImageUrl || fallbackImage;
+  const userAgent = (await headers()).get("user-agent") ?? "";
+  const appUrl = getOpenInAppUrl(event.id, userAgent);
+  const imageUrl = event.coverImageUrl || getSharePreviewUrl(event.id);
 
   return (
     <main className="min-h-screen bg-[#F5F7F5] px-5 py-8 text-[#1C2126]">
@@ -105,7 +106,7 @@ export default async function EventPage({ params }: EventPageProps) {
         </a>
 
         <p className="mt-4 text-center text-xs font-semibold text-zinc-400">
-          Se o app estiver instalado, o link abre direto no Confraria.
+          Se o Confraria não abrir sozinho, toque em Abrir no app.
         </p>
       </section>
     </main>
