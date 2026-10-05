@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
-    "/events/[eventId]/preview.jpg": [
+    "/events/**/*": [
       "./node_modules/@img/**/*",
       "./node_modules/sharp/**/*",
     ],
