@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { fetchEventShareDetail } from "@/lib/events";
-import { renderSharePreview } from "@/lib/share-preview-image";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1558981806-ec527fa84c3d?q=80&w=1200&auto=format&fit=crop";
@@ -29,6 +28,7 @@ export async function GET(_request: Request, { params }: PreviewRouteProps) {
       return new Response("Não foi possível ler a capa", { status: 502 });
     }
 
+    const { renderSharePreview } = await import("@/lib/share-preview-image");
     const preview = await renderSharePreview(Buffer.from(await source.arrayBuffer()));
 
     return new NextResponse(new Uint8Array(preview), {
