@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
+import { OpenInstalledApp } from "@/components/open-installed-app";
 import {
   fetchEventShareDetail,
   getOpenInAppUrl,
@@ -75,6 +76,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
   return (
     <main className="min-h-screen bg-[#F5F7F5] px-5 py-8 text-[#1C2126]">
+      <OpenInstalledApp eventId={event.id} />
       <section className="mx-auto max-w-md overflow-hidden rounded-[2rem] border border-zinc-200 bg-white p-4 shadow-sm">
         <div className="aspect-video overflow-hidden rounded-3xl bg-zinc-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}

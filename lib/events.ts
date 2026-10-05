@@ -43,8 +43,7 @@ export function getSharePreviewUrl(eventId: string) {
 
 /** Abre o app pelo pacote, mesmo sem o domínio verificado no Android. */
 export function getAndroidIntentUrl(eventId: string) {
-  const fallback = `${getPublicEventUrl(eventId)}?web=1`;
-  return `intent://event/${eventId}#Intent;scheme=appconfraria;package=${ANDROID_PACKAGE};S.browser_fallback_url=${encodeURIComponent(fallback)};end`;
+  return `intent://event/${eventId}#Intent;action=android.intent.action.VIEW;category=android.intent.category.DEFAULT;category=android.intent.category.BROWSABLE;scheme=appconfraria;package=${ANDROID_PACKAGE};end`;
 }
 
 export function getOpenInAppUrl(eventId: string, userAgent: string) {
